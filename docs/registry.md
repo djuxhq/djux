@@ -7,7 +7,7 @@ The djux registry is a single `registry.json` file hosted on GitHub. It lists ev
 ## Default registry
 
 ```
-https://raw.githubusercontent.com/browndevv/djx-registry/main/registry.json
+https://raw.githubusercontent.com/browndevv/djux-registry/main/registry.json
 ```
 
 This is the URL `djux list` and `djux add` use by default.
@@ -26,8 +26,8 @@ This is the URL `djux list` and `djux add` use by default.
       "tags": ["auth", "jwt", "api"],
       "author": "djx-dev",
       "official": true,
-      "repo": "https://github.com/browndevv/djx-app-auth",
-      "download": "https://github.com/browndevv/djx-app-auth/archive/refs/heads/main.zip"
+      "repo": "https://github.com/browndevv/djux-app-auth",
+      "download": "https://github.com/browndevv/djux-app-auth/archive/refs/heads/main.zip"
     }
   }
 }
@@ -108,7 +108,7 @@ djux add myapp --registry file:///path/to/local-registry.json
 
 ## Adding an app to the registry
 
-Apps are added to the registry by opening a pull request to [browndevv/djx-registry](https://github.com/browndevv/djx-registry).
+Apps are added to the registry by opening a pull request to [browndevv/djux-registry](https://github.com/browndevv/djux-registry).
 
 See [creating-apps.md](creating-apps.md) for the full submission process, including how to run `djux publish` to validate your app before opening the PR.
 

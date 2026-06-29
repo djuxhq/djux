@@ -202,7 +202,7 @@ Fix any reported errors before opening a PR.
 
 1. Push your app to a **public** GitHub repository
 2. Run `djux publish` to confirm everything is valid
-3. Open a PR to [browndevv/djx-registry](https://github.com/browndevv/djx-registry) adding your app to `registry.json`:
+3. Open a PR to [browndevv/djux-registry](https://github.com/browndevv/djux-registry) adding your app to `registry.json`:
 
 ```json
 {

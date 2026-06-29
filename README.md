@@ -125,9 +125,9 @@ myproject/
 
 | Repo | Purpose |
 |---|---|
-| [browndevv/djx](https://github.com/browndevv/djx) | This repo — CLI and project template |
-| [browndevv/djx-registry](https://github.com/browndevv/djx-registry) | Registry index (`registry.json`) |
-| [browndevv/djx-app-auth](https://github.com/browndevv/djx-app-auth) | Official auth app |
+| [browndevv/djux](https://github.com/browndevv/djux) | This repo — CLI and project template |
+| [browndevv/djux-registry](https://github.com/browndevv/djux-registry) | Registry index (`registry.json`) |
+| [browndevv/djux-app-auth](https://github.com/browndevv/djux-app-auth) | Official auth app |
 
 ---
 
@@ -135,7 +135,7 @@ myproject/
 
 To contribute an app to the registry, build it following the [app spec](docs/creating-apps.md), then run `djux publish` from your app directory for a ready-to-submit PR template.
 
-To contribute to the CLI itself, open a PR against [browndevv/djx](https://github.com/browndevv/djx).
+To contribute to the CLI itself, open a PR against [browndevv/djux](https://github.com/browndevv/djux).
 
 ---
 

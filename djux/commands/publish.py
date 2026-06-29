@@ -7,7 +7,7 @@ from djux.core.manifest import InvalidManifestError, parse_manifest
 
 console = Console()
 
-REGISTRY_PR_URL = "https://github.com/browndevv/djx-registry/compare"
+REGISTRY_PR_URL = "https://github.com/browndevv/djux-registry/compare"
 
 
 @click.command()
