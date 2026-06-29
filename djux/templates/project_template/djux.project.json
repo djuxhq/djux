@@ -1,5 +1,5 @@
 {
-  "djx_version": "0.1.0",
+  "djux_version": "0.1.0",
   "project": "{{project_name}}",
   "installed_apps": []
 }

@@ -5,8 +5,8 @@ from pathlib import Path
 import click
 from rich.console import Console
 
-from djx.core.patcher import unpatch_installed_apps, unpatch_settings_block, unpatch_urls
-from djx.core.manifest import parse_manifest, InvalidManifestError
+from djux.core.patcher import unpatch_installed_apps, unpatch_settings_block, unpatch_urls
+from djux.core.manifest import parse_manifest, InvalidManifestError
 
 console = Console()
 
@@ -14,17 +14,17 @@ console = Console()
 def _find_project_root() -> Path | None:
     current = Path.cwd()
     for parent in [current, *current.parents]:
-        if (parent / "djx.project.json").exists():
+        if (parent / "djux.project.json").exists():
             return parent
     return None
 
 
 def _read_project_json(root: Path) -> dict:
-    return json.loads((root / "djx.project.json").read_text(encoding="utf-8"))
+    return json.loads((root / "djux.project.json").read_text(encoding="utf-8"))
 
 
 def _write_project_json(root: Path, data: dict) -> None:
-    (root / "djx.project.json").write_text(
+    (root / "djux.project.json").write_text(
         json.dumps(data, indent=2), encoding="utf-8"
     )
 
@@ -33,12 +33,12 @@ def _write_project_json(root: Path, data: dict) -> None:
 @click.argument("app_name")
 @click.option("--yes", is_flag=True, help="Skip confirmation prompt.")
 def remove(app_name: str, yes: bool):
-    """Remove an installed djx app from the current project."""
+    """Remove an installed djux app from the current project."""
 
     # 1. Find project root
     root = _find_project_root()
     if root is None:
-        console.print("✗ No djx project found. Run this inside a djx project.")
+        console.print("✗ No djux project found. Run this inside a djx project.")
         raise SystemExit(1)
 
     # 2. Check app directory exists
@@ -80,7 +80,7 @@ def remove(app_name: str, yes: bool):
     unpatch_urls(urls_path, app_name)
     console.print("✓ urls.py updated")
 
-    # 7. Update djx.project.json
+    # 7. Update djux.project.json
     project_data = _read_project_json(root)
     project_data["installed_apps"] = [
         a for a in project_data.get("installed_apps", []) if a != app_name

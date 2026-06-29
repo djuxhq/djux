@@ -3,11 +3,11 @@ from pathlib import Path
 import click
 from rich.console import Console
 
-from djx.core.manifest import InvalidManifestError, parse_manifest
+from djux.core.manifest import InvalidManifestError, parse_manifest
 
 console = Console()
 
-REGISTRY_PR_URL = "https://github.com/djx-dev/registry/compare"
+REGISTRY_PR_URL = "https://github.com/browndevv/djx-registry/compare"
 
 
 @click.command()
@@ -57,7 +57,7 @@ def publish():
         f"- **Author:** {manifest.get('author', '<your-name>')}\n\n"
         f"Checklist:\n"
         f"- [ ] App repo is public\n"
-        f"- [ ] djx.json is valid (verified by djx publish)\n"
+        f"- [ ] djx.json is valid (verified by djux publish)\n"
         f"- [ ] README.md exists\n"
         f"- [ ] At least one passing test\n"
         f"---"

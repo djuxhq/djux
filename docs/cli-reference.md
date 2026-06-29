@@ -1,28 +1,28 @@
-# CLI reference
+﻿# CLI reference
 
-Complete reference for all `djx` commands.
+Complete reference for all `djux` commands.
 
 ---
 
 ## Global options
 
 ```
-djx [OPTIONS] COMMAND [ARGS]...
+djux [OPTIONS] COMMAND [ARGS]...
 ```
 
 | Option | Description |
 |---|---|
-| `--version` | Show the installed djx version and exit |
+| `--version` | Show the installed djux version and exit |
 | `--help` | Show help for any command |
 
 ---
 
-## djx new
+## djux new
 
-Scaffold a new djx Django project.
+Scaffold a new djux Django project.
 
 ```
-djx new <project_name>
+djux new <project_name>
 ```
 
 ### What it does
@@ -54,7 +54,7 @@ Creating project: myproject
 │   python manage.py migrate          │
 │   python manage.py runserver        │
 │                                     │
-│   Then add apps:  djx add auth      │
+│   Then add apps:  djux add auth      │
 ╰─────────────────────────────────────╯
 ```
 
@@ -71,14 +71,14 @@ myproject/
 ├── config/
 │   ├── __init__.py
 │   ├── settings.py        ← reads SECRET_KEY, DEBUG, ALLOWED_HOSTS from .env
-│   ├── urls.py            ← contains # djx:urls anchor
+│   ├── urls.py            ← contains # djux:urls anchor
 │   ├── wsgi.py
 │   └── asgi.py
-├── apps/                  ← djx drops app folders here; on sys.path
+├── apps/                  ← djux drops app folders here; on sys.path
 ├── templates/
 ├── static/
 ├── manage.py
-├── djx.project.json       ← project marker + installed app tracking
+├── djux.project.json       ← project marker + installed app tracking
 ├── requirements.txt       ← Django>=4.2, python-dotenv>=1.0
 ├── .env.example
 └── .gitignore
@@ -86,12 +86,12 @@ myproject/
 
 ---
 
-## djx add
+## djux add
 
 Download and install an app from the registry into the current project.
 
 ```
-djx add <app_name> [--registry <url>]
+djux add <app_name> [--registry <url>]
 ```
 
 ### Arguments
@@ -110,26 +110,26 @@ djx add <app_name> [--registry <url>]
 
 Steps run in this order:
 
-1. Walks up from the current directory to find `djx.project.json` (project root)
-2. Checks `djx.project.json` — warns and exits if the app is already installed
+1. Walks up from the current directory to find `djux.project.json` (project root)
+2. Checks `djux.project.json` — warns and exits if the app is already installed
 3. Fetches the registry (uses 1-hour cache; falls back to cache if offline)
 4. Downloads the app zip from the registry's `download` URL
 5. Extracts the zip, unwrapping GitHub's top-level folder automatically
-6. Validates `djx.json` — checks all required fields
+6. Validates `djux.json` — checks all required fields
 7. Checks `requires_apps` — errors if a dependency app is not yet installed
 8. Copies the `app/` folder to `<project_root>/apps/<app_name>/`
-9. Patches `config/settings.py` — adds `installed_apps` entries above `# djx:installed_apps`
-10. Patches `config/settings.py` — injects `settings_patch` block above `# djx:settings` (if present)
-11. Patches `config/urls.py` — adds URL include above `# djx:urls`
+9. Patches `config/settings.py` — adds `installed_apps` entries above `# djux:installed_apps`
+10. Patches `config/settings.py` — injects `settings_patch` block above `# djux:settings` (if present)
+11. Patches `config/urls.py` — adds URL include above `# djux:urls`
 12. Runs `pip install` for each entry in `dependencies`
 13. Runs `python manage.py migrate` if `migrations: true` in the manifest
-14. Updates `djx.project.json` to record the installed app
+14. Updates `djux.project.json` to record the installed app
 
-All patching is idempotent — running `djx add auth` twice is safe.
+All patching is idempotent — running `djux add auth` twice is safe.
 
 ### Naming collision
 
-If `apps/<app_name>/` already exists, djx prompts you instead of overwriting:
+If `apps/<app_name>/` already exists, djux prompts you instead of overwriting:
 
 ```
 Warning: Directory 'apps/auth' already exists.
@@ -144,7 +144,7 @@ Rules for the alternate name:
 
 Pressing Enter (empty input) cancels the installation.
 
-When installed under a different name, the URL include and `djx.project.json` use the new name. The `INSTALLED_APPS` entries (declared in `djx.json`) stay unchanged because they're Django app labels, not folder names.
+When installed under a different name, the URL include and `djux.project.json` use the new name. The `INSTALLED_APPS` entries (declared in `djux.json`) stay unchanged because they're Django app labels, not folder names.
 
 ### Output
 
@@ -166,12 +166,12 @@ Notes: Endpoints: POST /api/auth/register/ ...
 
 | Condition | Message |
 |---|---|
-| Not inside a djx project | `✗ No djx project found. Run this inside a djx project.` |
+| Not inside a djux project | `✗ No djux project found. Run this inside a djux project.` |
 | App already installed | `⚠ App 'auth' is already installed.` |
-| App not found in registry | `✗ App 'xyz' not found in registry. Run djx list to see available apps.` |
-| Missing djx.json in download | `✗ App is missing djx.json manifest.` |
-| Missing required field in djx.json | `✗ djx.json is missing required field: 'version'` |
-| Dependency app not installed | `✗ App 'chat' requires 'auth' to be installed first. Run: djx add auth` |
+| App not found in registry | `✗ App 'xyz' not found in registry. Run djux list to see available apps.` |
+| Missing djux.json in download | `✗ App is missing djux.json manifest.` |
+| Missing required field in djux.json | `✗ djux.json is missing required field: 'version'` |
+| Dependency app not installed | `✗ App 'chat' requires 'auth' to be installed first. Run: djux add auth` |
 | Missing app/ directory | `✗ App package is missing the 'app/' directory.` |
 | pip install failed | `✗ pip install failed:` + stderr |
 | migrate failed | `✗ migrate failed:` + stderr |
@@ -180,12 +180,12 @@ Notes: Endpoints: POST /api/auth/register/ ...
 
 ---
 
-## djx remove
+## djux remove
 
 Remove an installed app from the project.
 
 ```
-djx remove <app_name> [--yes]
+djux remove <app_name> [--yes]
 ```
 
 ### Arguments
@@ -205,14 +205,14 @@ djx remove <app_name> [--yes]
 1. Finds the project root
 2. Checks that `apps/<app_name>/` exists
 3. Prompts for confirmation (skipped with `--yes`)
-4. Reads `djx.json` from `apps/<app_name>/` before deleting (to know what to unpatch)
+4. Reads `djux.json` from `apps/<app_name>/` before deleting (to know what to unpatch)
 5. Deletes `apps/<app_name>/` recursively
 6. Removes `INSTALLED_APPS` entries from `config/settings.py`
 7. Removes the `settings_patch` block from `config/settings.py` (if one exists)
 8. Removes the URL include from `config/urls.py`
-9. Removes the app from `djx.project.json`
+9. Removes the app from `djux.project.json`
 
-> **Note:** `djx remove` does **not** run `python manage.py migrate`. If the app added database tables, run it yourself after removal to clean up the schema.
+> **Note:** `djux remove` does **not** run `python manage.py migrate`. If the app added database tables, run it yourself after removal to clean up the schema.
 
 ### Output
 
@@ -229,18 +229,18 @@ Note: If this app had database models, run python manage.py migrate to clean up 
 
 | Condition | Message |
 |---|---|
-| Not inside a djx project | `✗ No djx project found. Run this inside a djx project.` |
+| Not inside a djux project | `✗ No djux project found. Run this inside a djux project.` |
 | App not found | `✗ App 'auth' is not installed (no directory at apps/auth/).` |
 | Confirmation declined | Exits cleanly with no changes |
 
 ---
 
-## djx list
+## djux list
 
 Show all apps available in the registry.
 
 ```
-djx list [--registry <url>] [--refresh]
+djux list [--registry <url>] [--refresh]
 ```
 
 ### Options
@@ -253,32 +253,32 @@ djx list [--registry <url>] [--refresh]
 ### Output
 
 ```
-┌──────────────────── Available djx Apps ─────────────────────┐
+┌──────────────────── Available djux apps ─────────────────────┐
 │ Name     Version  Description                          Tags  │
 │ auth ★   0.1.0    JWT authentication — register, ...  auth  │
 └─────────────────────────────────────────────────────────────┘
 
-  Install any app:  djx add <name>
-  ★ = official djx app
+  Install any app:  djux add <name>
+  ★ = official djux app
 ```
 
-Official apps (marked `★`) are maintained by the djx team.
+Official apps (marked `★`) are maintained by the djux team.
 
 ---
 
-## djx publish
+## djux publish
 
 Validate your app directory and generate a registry PR template.
 
 ```
-djx publish
+djux publish
 ```
 
-Run this from the root of your app directory (the folder containing `djx.json`).
+Run this from the root of your app directory (the folder containing `djux.json`).
 
 ### What it validates
 
-1. `djx.json` exists and all required fields are present and correctly typed
+1. `djux.json` exists and all required fields are present and correctly typed
 2. `app/` directory exists with `__init__.py`, `apps.py`, `models.py`, `views.py`, `urls.py`
 3. `README.md` exists
 
@@ -292,7 +292,7 @@ Run this from the root of your app directory (the folder containing `djx.json`).
 Your app is ready to submit!
 
 1. Push your app to a public GitHub repo
-2. Open a PR to the djx registry:
+2. Open a PR to the djux registry:
    https://github.com/browndevv/djx-registry/compare
 
 PR body template:
@@ -306,7 +306,7 @@ PR body template:
 
 | Condition | Message |
 |---|---|
-| Missing or invalid `djx.json` | `✗ djx.json is missing required field: 'version'` |
+| Missing or invalid `djux.json` | `✗ djux.json is missing required field: 'version'` |
 | Missing `app/` directory | `✗ Missing 'app/' directory.` |
 | Missing files inside `app/` | `✗ Missing required files in app/: admin.py, serializers.py` |
 | Missing `README.md` | `✗ Missing README.md — required for registry submission.` |
@@ -320,4 +320,4 @@ PR body template:
 | `0` | Success |
 | `1` | Error (message printed to stdout) |
 
-`djx add` also exits `0` when the user cancels a naming collision prompt.
+`djux add` also exits `0` when the user cancels a naming collision prompt.

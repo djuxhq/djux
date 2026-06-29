@@ -3,9 +3,9 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "djx"
+name = "djux"
 version = "0.1.0"
-description = "Django extensions CLI — add production-ready apps in one command"
+description = "djux — Django User Experience CLI: add production-ready apps in one command"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -16,11 +16,11 @@ dependencies = [
 ]
 
 [project.scripts]
-djx = "djx.cli:main"
+djux = "djux.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["djx*"]
+include = ["djux*"]
 
 [tool.setuptools.package-data]
-djx = ["templates/**/*", "templates/**/.*"]
+djux = ["templates/**/*", "templates/**/.*"]

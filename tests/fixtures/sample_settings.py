@@ -1,7 +1,7 @@
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
-    # djx:installed_apps
+    # djux:installed_apps
 ]
 
-# djx:settings
+# djux:settings

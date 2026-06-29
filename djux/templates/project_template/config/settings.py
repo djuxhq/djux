@@ -24,7 +24,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # djx:installed_apps
+    # djux:installed_apps
 ]
 
 MIDDLEWARE = [
@@ -82,4 +82,4 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# djx:settings
+# djux:settings

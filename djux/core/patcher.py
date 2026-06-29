@@ -8,11 +8,11 @@ def patch_installed_apps(settings_path: Path, apps: list[str]) -> None:
         # Already present as a quoted string — skip
         if re.search(rf"""['"]{ re.escape(app_name) }['"]""", text):
             continue
-        anchor = "# djx:installed_apps"
+        anchor = "# djux:installed_apps"
         if anchor not in text:
             raise ValueError(
                 f"settings.py is missing the anchor comment '{anchor}'. "
-                "This project may not have been created by djx."
+                "This project may not have been created by djux."
             )
         text = text.replace(anchor, f'    "{app_name}",\n    {anchor}')
     settings_path.write_text(text, encoding="utf-8")
@@ -27,9 +27,9 @@ def unpatch_installed_apps(settings_path: Path, apps: list[str]) -> None:
 
 
 def patch_settings_block(settings_path: Path, block: str) -> None:
-    """Inject a raw Python settings block above # djx:settings anchor."""
+    """Inject a raw Python settings block above # djux:settings anchor."""
     text = settings_path.read_text(encoding="utf-8")
-    anchor = "# djx:settings"
+    anchor = "# djux:settings"
     if anchor not in text:
         # Append anchor + block at end of file
         text = text.rstrip() + f"\n\n{anchor}\n"
@@ -64,11 +64,11 @@ def patch_urls(urls_path: Path, app_name: str, prefix: str) -> None:
             text,
         )
 
-    anchor = "# djx:urls"
+    anchor = "# djux:urls"
     if anchor not in text:
         raise ValueError(
             f"urls.py is missing the anchor comment '{anchor}'. "
-            "This project may not have been created by djx."
+            "This project may not have been created by djux."
         )
 
     new_line = f'    path("{prefix}", include("{app_name}.urls")),\n    '

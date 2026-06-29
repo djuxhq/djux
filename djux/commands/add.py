@@ -7,14 +7,14 @@ from pathlib import Path
 import click
 from rich.console import Console
 
-from djx.core.downloader import download_and_extract
-from djx.core.manifest import InvalidManifestError, parse_manifest
-from djx.core.patcher import (
+from djux.core.downloader import download_and_extract
+from djux.core.manifest import InvalidManifestError, parse_manifest
+from djux.core.patcher import (
     patch_installed_apps,
     patch_settings_block,
     patch_urls,
 )
-from djx.core.registry import REGISTRY_URL, fetch_registry, get_app
+from djux.core.registry import REGISTRY_URL, fetch_registry, get_app
 
 console = Console()
 
@@ -22,17 +22,17 @@ console = Console()
 def _find_project_root() -> Path | None:
     current = Path.cwd()
     for parent in [current, *current.parents]:
-        if (parent / "djx.project.json").exists():
+        if (parent / "djux.project.json").exists():
             return parent
     return None
 
 
 def _read_project_json(root: Path) -> dict:
-    return json.loads((root / "djx.project.json").read_text(encoding="utf-8"))
+    return json.loads((root / "djux.project.json").read_text(encoding="utf-8"))
 
 
 def _write_project_json(root: Path, data: dict) -> None:
-    (root / "djx.project.json").write_text(
+    (root / "djux.project.json").write_text(
         json.dumps(data, indent=2), encoding="utf-8"
     )
 
@@ -41,12 +41,12 @@ def _write_project_json(root: Path, data: dict) -> None:
 @click.argument("app_name")
 @click.option("--registry", "registry_url", default=REGISTRY_URL, help="Custom registry URL.")
 def add(app_name: str, registry_url: str):
-    """Download and install a djx app into the current project."""
+    """Download and install a djux app into the current project."""
 
     # 1. Find project root
     root = _find_project_root()
     if root is None:
-        console.print("✗ No djx project found. Run this inside a djx project.")
+        console.print("✗ No djux project found. Run this inside a djx project.")
         raise SystemExit(1)
 
     # 2. Check if already installed
@@ -67,7 +67,7 @@ def add(app_name: str, registry_url: str):
     if app_entry is None:
         console.print(
             f"✗ App '[bold]{app_name}[/bold]' not found in registry.\n"
-            "  Run [cyan]djx list[/cyan] to see available apps."
+            "  Run [cyan]djux list[/cyan] to see available apps."
         )
         raise SystemExit(1)
 
@@ -98,7 +98,7 @@ def add(app_name: str, registry_url: str):
             console.print(
                 f"✗ App '[bold]{app_name}[/bold]' requires "
                 f"'[bold]{dep}[/bold]' to be installed first.\n"
-                f"  Run: [cyan]djx add {dep}[/cyan]"
+                f"  Run: [cyan]djux add {dep}[/cyan]"
             )
             raise SystemExit(1)
 
@@ -188,7 +188,7 @@ def add(app_name: str, registry_url: str):
                 raise SystemExit(1)
         console.print("✓ Migrations applied")
 
-    # 13. Update djx.project.json
+    # 13. Update djux.project.json
     project_data.setdefault("installed_apps", []).append(install_name)
     _write_project_json(root, project_data)
 

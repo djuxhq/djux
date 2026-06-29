@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 from click.testing import CliRunner
 
-from djx.commands.new import new
+from djux.commands.new import new
 
 
 @pytest.fixture
@@ -29,7 +29,7 @@ def test_new_creates_directory_structure(runner):
     assert (root / "config" / "wsgi.py").exists()
     assert (root / "config" / "asgi.py").exists()
     assert (root / "manage.py").exists()
-    assert (root / "djx.project.json").exists()
+    assert (root / "djux.project.json").exists()
     assert (root / "requirements.txt").exists()
     assert (root / ".env.example").exists()
     assert (root / ".gitignore").exists()
@@ -44,7 +44,7 @@ def test_new_replaces_project_name_placeholder(runner):
 
     root = Path.cwd() / "myproject"
 
-    project_json = (root / "djx.project.json").read_text()
+    project_json = (root / "djux.project.json").read_text()
     assert "myproject" in project_json
     assert "{{project_name}}" not in project_json
 
@@ -63,7 +63,7 @@ def test_new_project_json_has_correct_structure(runner):
     import json
 
     runner.invoke(new, ["myproject"])
-    data = json.loads((Path.cwd() / "myproject" / "djx.project.json").read_text())
+    data = json.loads((Path.cwd() / "myproject" / "djux.project.json").read_text())
     assert data["project"] == "myproject"
     assert data["installed_apps"] == []
-    assert "djx_version" in data
+    assert "djux_version" in data

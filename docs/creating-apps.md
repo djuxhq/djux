@@ -1,12 +1,12 @@
-# Creating apps
+﻿# Creating apps
 
-This guide explains how to build a djx-compatible app and submit it to the registry.
+This guide explains how to build a djux-compatible app and submit it to the registry.
 
 ---
 
 ## Overview
 
-A djx app is a standard Django app packaged with a `djx.json` manifest. When someone runs `djx add yourapp`, the CLI downloads your app, copies it into their `apps/` directory, and uses the manifest to wire everything up automatically.
+A djux app is a standard Django app packaged with a `djux.json` manifest. When someone runs `djux add yourapp`, the CLI downloads your app, copies it into their `apps/` directory, and uses the manifest to wire everything up automatically.
 
 ---
 
@@ -14,7 +14,7 @@ A djx app is a standard Django app packaged with a `djx.json` manifest. When som
 
 ```
 your-app/                  ← GitHub repo root
-├── djx.json               ← Manifest (required)
+├── djux.json               ← Manifest (required)
 ├── app/                   ← The Django app (required)
 │   ├── __init__.py
 │   ├── apps.py
@@ -26,16 +26,16 @@ your-app/                  ← GitHub repo root
 │   └── migrations/
 │       └── __init__.py
 ├── README.md              ← Required for registry submission
-└── requirements.txt       ← Optional, same content as djx.json dependencies
+└── requirements.txt       ← Optional, same content as djux.json dependencies
 ```
 
 The `app/` directory is what gets copied into the user's project. Everything else stays in your repo.
 
 ---
 
-## The djx.json manifest
+## The djux.json manifest
 
-`djx.json` is the single source of truth for how the CLI installs your app.
+`djux.json` is the single source of truth for how the CLI installs your app.
 
 ### Required fields
 
@@ -43,7 +43,7 @@ The `app/` directory is what gets copied into the user's project. Everything els
 |---|---|---|
 | `name` | string | Unique identifier. Lowercase, hyphens allowed. Must match your registry entry. |
 | `version` | string | Semver string, e.g. `"0.1.0"` |
-| `description` | string | One-line description shown in `djx list` |
+| `description` | string | One-line description shown in `djux list` |
 | `installed_apps` | string[] | Entries to add to Django's `INSTALLED_APPS` |
 | `url_prefix` | string | URL prefix for the app's routes, e.g. `"api/auth/"` |
 | `dependencies` | string[] | pip packages to install, with version specifiers |
@@ -56,8 +56,8 @@ The `app/` directory is what gets copied into the user's project. Everything els
 | `settings_patch` | string | Raw Python code injected into `config/settings.py` (see below). |
 | `env_vars` | string[] | Environment variable names the user must set. Shown post-install. |
 | `notes` | string | Message shown to the user after successful install. |
-| `requires_apps` | string[] | Other djx apps that must be installed first. |
-| `requires_djx` | string | Minimum djx version required. |
+| `requires_apps` | string[] | Other djux apps that must be installed first. |
+| `requires_djux` | string | Minimum djux version required. |
 | `tags` | string[] | Tags for discovery, e.g. `["auth", "jwt", "api"]`. |
 | `author` | string | Your name or GitHub username. |
 
@@ -101,9 +101,9 @@ The `app/` directory is what gets copied into the user's project. Everything els
 
 If your app needs extra settings beyond `INSTALLED_APPS` entries — like `REST_FRAMEWORK`, `SIMPLE_JWT`, or `CELERY_BROKER_URL` — use `settings_patch`.
 
-The value is a string of raw Python code. djx injects it into `config/settings.py` above the `# djx:settings` anchor. It is injected verbatim, so it must be valid Python.
+The value is a string of raw Python code. djx injects it into `config/settings.py` above the `# djux:settings` anchor. It is injected verbatim, so it must be valid Python.
 
-**In djx.json:**
+**In djux.json:**
 
 ```json
 {
@@ -117,7 +117,7 @@ The value is a string of raw Python code. djx injects it into `config/settings.p
 MYAPP_SETTING = 'value'
 MYAPP_TIMEOUT = 30
 
-# djx:settings
+# djux:settings
 ```
 
 Store it as a single-line string in JSON — use `\n` for newlines and `\"` for quotes:
@@ -126,7 +126,7 @@ Store it as a single-line string in JSON — use `\n` for newlines and `\"` for 
 "settings_patch": "MYAPP = {\n    \"key\": \"value\"\n}"
 ```
 
-When `djx remove` is run, the block is removed automatically.
+When `djux remove` is run, the block is removed automatically.
 
 ---
 
@@ -144,7 +144,7 @@ class MyAppConfig(AppConfig):
     name = "myapp"
 ```
 
-**`urls.py`** — define a `urlpatterns` list; these are included at the prefix you set in `djx.json`:
+**`urls.py`** — define a `urlpatterns` list; these are included at the prefix you set in `djux.json`:
 
 ```python
 from django.urls import path
@@ -155,7 +155,7 @@ urlpatterns = [
 ]
 ```
 
-**`migrations/`** — always include the `migrations/` package with at least `__init__.py`, even if your app has no models. Set `"migrations": false` in `djx.json` if you have no models.
+**`migrations/`** — always include the `migrations/` package with at least `__init__.py`, even if your app has no models. Set `"migrations": false` in `djux.json` if you have no models.
 
 ---
 
@@ -163,17 +163,17 @@ urlpatterns = [
 
 The entries in `installed_apps` are Django app labels — the `name` from `apps.py`. These are independent of the folder name in `apps/`.
 
-When a user installs your app under a custom name (due to a collision), the folder name changes but your `installed_apps` entries stay the same. Make sure your `apps.py` `name` value matches what you declare in `djx.json`.
+When a user installs your app under a custom name (due to a collision), the folder name changes but your `installed_apps` entries stay the same. Make sure your `apps.py` `name` value matches what you declare in `djux.json`.
 
 ---
 
 ## Testing locally
 
-Before submitting to the registry, test your app against a real djx project:
+Before submitting to the registry, test your app against a real djux project:
 
 ```bash
-# In a djx project, use --registry to point at a local JSON file
-djx add myapp --registry file:///path/to/local-registry.json
+# In a djux project, use --registry to point at a local JSON file
+djux add myapp --registry file:///path/to/local-registry.json
 ```
 
 Or use the dev path directly: copy your `app/` folder into `apps/myapp/`, manually add entries to `settings.py` and `urls.py`, and run `python manage.py migrate`.
@@ -182,15 +182,15 @@ Or use the dev path directly: copy your `app/` folder into `apps/myapp/`, manual
 
 ## Validating before submission
 
-Run `djx publish` from your app directory:
+Run `djux publish` from your app directory:
 
 ```bash
 cd your-app/
-djx publish
+djux publish
 ```
 
 This checks:
-- `djx.json` has all required fields with the correct types
+- `djux.json` has all required fields with the correct types
 - `app/` exists with `__init__.py`, `apps.py`, `models.py`, `views.py`, `urls.py`
 - `README.md` is present
 
@@ -201,7 +201,7 @@ Fix any reported errors before opening a PR.
 ## Submitting to the registry
 
 1. Push your app to a **public** GitHub repository
-2. Run `djx publish` to confirm everything is valid
+2. Run `djux publish` to confirm everything is valid
 3. Open a PR to [browndevv/djx-registry](https://github.com/browndevv/djx-registry) adding your app to `registry.json`:
 
 ```json
@@ -222,12 +222,12 @@ Fix any reported errors before opening a PR.
 }
 ```
 
-The `download` URL must point to a zip that contains `djx.json` and `app/` at its root (after GitHub's wrapper folder is stripped).
+The `download` URL must point to a zip that contains `djux.json` and `app/` at its root (after GitHub's wrapper folder is stripped).
 
 ### PR checklist
 
 - [ ] App repo is public
-- [ ] `djx publish` passes with no errors
+- [ ] `djux publish` passes with no errors
 - [ ] `README.md` exists and explains what the app does
 - [ ] At least one passing test in the app repo
 - [ ] `download` URL resolves to a valid zip
@@ -236,4 +236,4 @@ The `download` URL must point to a zip that contains `djx.json` and `app/` at it
 
 ## Versioning
 
-Update the `version` field in `djx.json` and your registry entry when you release changes. djx does not currently enforce version pinning (every `djx add` downloads the latest `main` branch), but the registry entry version is shown in `djx list` and `djx add` output.
+Update the `version` field in `djux.json` and your registry entry when you release changes. djx does not currently enforce version pinning (every `djux add` downloads the latest `main` branch), but the registry entry version is shown in `djux list` and `djux add` output.

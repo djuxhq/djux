@@ -2,7 +2,7 @@ import click
 from rich.console import Console
 from rich.table import Table
 
-from djx.core.registry import REGISTRY_URL, fetch_registry
+from djux.core.registry import REGISTRY_URL, fetch_registry
 
 console = Console()
 
@@ -11,7 +11,7 @@ console = Console()
 @click.option("--registry", "registry_url", default=REGISTRY_URL, help="Custom registry URL.")
 @click.option("--refresh", is_flag=True, help="Bypass cache and fetch fresh registry.")
 def list_apps(registry_url: str, refresh: bool):
-    """Show all apps available in the djx registry."""
+    """Show all apps available in the djux registry."""
     with console.status("Fetching registry..."):
         try:
             registry = fetch_registry(registry_url, force_refresh=refresh)
@@ -24,7 +24,7 @@ def list_apps(registry_url: str, refresh: bool):
         console.print("No apps found in registry.")
         return
 
-    table = Table(title="Available djx Apps", border_style="blue")
+    table = Table(title="Available djux Apps", border_style="blue")
     table.add_column("Name", style="bold cyan", no_wrap=True)
     table.add_column("Version", style="green")
     table.add_column("Description")
@@ -41,5 +41,5 @@ def list_apps(registry_url: str, refresh: bool):
         )
 
     console.print(table)
-    console.print("\n  Install any app:  [bold cyan]djx add <name>[/bold cyan]")
-    console.print("  [yellow]★[/yellow] = official djx app")
+    console.print("\n  Install any app:  [bold cyan]djux add <name>[/bold cyan]")
+    console.print("  [yellow]★[/yellow] = official djux app")

@@ -1,6 +1,6 @@
-# Registry
+﻿# Registry
 
-The djx registry is a single `registry.json` file hosted on GitHub. It lists every app available to install.
+The djux registry is a single `registry.json` file hosted on GitHub. It lists every app available to install.
 
 ---
 
@@ -10,7 +10,7 @@ The djx registry is a single `registry.json` file hosted on GitHub. It lists eve
 https://raw.githubusercontent.com/browndevv/djx-registry/main/registry.json
 ```
 
-This is the URL `djx list` and `djx add` use by default.
+This is the URL `djux list` and `djux add` use by default.
 
 ---
 
@@ -44,13 +44,13 @@ This is the URL `djx list` and `djx add` use by default.
 
 | Field | Type | Description |
 |---|---|---|
-| `version` | string | Current version of the app. Informational — shown in `djx list` and `djx add` output. |
-| `description` | string | One-line description shown in `djx list`. |
+| `version` | string | Current version of the app. Informational — shown in `djux list` and `djux add` output. |
+| `description` | string | One-line description shown in `djux list`. |
 | `tags` | string[] | Discovery tags. |
 | `author` | string | Publisher name or GitHub username. |
-| `official` | boolean | `true` for apps maintained by the djx team. Shown with ★ in `djx list`. |
+| `official` | boolean | `true` for apps maintained by the djux team. Shown with ★ in `djux list`. |
 | `repo` | string | URL of the app's GitHub repository. |
-| `download` | string | URL of the zip archive that `djx add` downloads. |
+| `download` | string | URL of the zip archive that `djux add` downloads. |
 
 The `download` URL is passed directly to the downloader. For GitHub repos, use the archive URL format:
 
@@ -62,11 +62,11 @@ https://github.com/<owner>/<repo>/archive/refs/heads/main.zip
 
 ## Caching
 
-The CLI caches the registry locally to keep `djx add` fast and work offline.
+The CLI caches the registry locally to keep `djux add` fast and work offline.
 
-**Cache location:** `~/.djx/registry.json`  
+**Cache location:** `~/.djux/registry.json`  
 **Cache TTL:** 1 hour  
-**Metadata:** `~/.djx/registry.meta.json` (stores the fetch timestamp)
+**Metadata:** `~/.djux/registry.meta.json` (stores the fetch timestamp)
 
 ### Cache behaviour
 
@@ -80,7 +80,7 @@ The CLI caches the registry locally to keep `djx add` fast and work offline.
 ### Force a fresh fetch
 
 ```bash
-djx list --refresh
+djux list --refresh
 ```
 
 This bypasses the cache for that one invocation. The cache is then updated with the fresh data.
@@ -89,11 +89,11 @@ This bypasses the cache for that one invocation. The cache is then updated with 
 
 ## Using a custom registry
 
-Both `djx add` and `djx list` accept a `--registry` option:
+Both `djux add` and `djux list` accept a `--registry` option:
 
 ```bash
-djx list --registry https://example.com/my-registry.json
-djx add myapp --registry https://example.com/my-registry.json
+djux list --registry https://example.com/my-registry.json
+djux add myapp --registry https://example.com/my-registry.json
 ```
 
 The custom URL must serve a JSON file in the standard `registry.json` format. Caching applies to custom registries too, keyed on the default cache path (so mixing registries in the same session will use whichever was cached last — use `--refresh` to force a fetch when switching).
@@ -101,7 +101,7 @@ The custom URL must serve a JSON file in the standard `registry.json` format. Ca
 A local file URL also works during development:
 
 ```bash
-djx add myapp --registry file:///path/to/local-registry.json
+djux add myapp --registry file:///path/to/local-registry.json
 ```
 
 ---
@@ -110,8 +110,8 @@ djx add myapp --registry file:///path/to/local-registry.json
 
 Apps are added to the registry by opening a pull request to [browndevv/djx-registry](https://github.com/browndevv/djx-registry).
 
-See [creating-apps.md](creating-apps.md) for the full submission process, including how to run `djx publish` to validate your app before opening the PR.
+See [creating-apps.md](creating-apps.md) for the full submission process, including how to run `djux publish` to validate your app before opening the PR.
 
 ### Official apps
 
-Apps marked `"official": true` are maintained by the djx team and reviewed more strictly. Community apps are welcome and reviewed for basic safety (public repo, valid manifest, working download URL) but are not otherwise audited.
+Apps marked `"official": true` are maintained by the djux team and reviewed more strictly. Community apps are welcome and reviewed for basic safety (public repo, valid manifest, working download URL) but are not otherwise audited.

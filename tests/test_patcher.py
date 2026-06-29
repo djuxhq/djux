@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from djx.core.patcher import (
+from djux.core.patcher import (
     patch_installed_apps,
     patch_urls,
     unpatch_installed_apps,
@@ -91,7 +91,7 @@ def test_patch_urls_adds_include_import_when_missing(tmp_path):
         "from django.urls import path\n\n"
         "urlpatterns = [\n"
         "    path('admin/', admin.site.urls),\n"
-        "    # djx:urls\n"
+        "    # djux:urls\n"
         "]\n"
     )
     patch_urls(urls_no_include, "myapp", "api/myapp/")

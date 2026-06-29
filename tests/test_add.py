@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from click.testing import CliRunner
 
-from djx.commands.add import add
+from djux.commands.add import add
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
@@ -47,9 +47,9 @@ def _make_djx_project(root: Path) -> None:
     settings.write_text(
         "INSTALLED_APPS = [\n"
         '    "django.contrib.auth",\n'
-        "    # djx:installed_apps\n"
+        "    # djux:installed_apps\n"
         "]\n\n"
-        "# djx:settings\n"
+        "# djux:settings\n"
     )
 
     urls = config / "urls.py"
@@ -58,14 +58,14 @@ def _make_djx_project(root: Path) -> None:
         "from django.urls import path, include\n\n"
         "urlpatterns = [\n"
         "    path('admin/', admin.site.urls),\n"
-        "    # djx:urls\n"
+        "    # djux:urls\n"
         "]\n"
     )
 
     (root / "apps").mkdir()
 
-    (root / "djx.project.json").write_text(
-        json.dumps({"djx_version": "0.1.0", "project": "myproject", "installed_apps": []})
+    (root / "djux.project.json").write_text(
+        json.dumps({"djux_version": "0.1.0", "project": "myproject", "installed_apps": []})
     )
 
 
@@ -74,7 +74,7 @@ def _make_app_zip(tmp_path: Path) -> Path:
     app_src = tmp_path / "build" / "testapp-main"
     app_src.mkdir(parents=True)
 
-    (app_src / "djx.json").write_text(json.dumps(MOCK_MANIFEST))
+    (app_src / "djux.json").write_text(json.dumps(MOCK_MANIFEST))
 
     app_code = app_src / "app"
     app_code.mkdir()
@@ -108,8 +108,8 @@ def test_add_full_flow(runner, djx_project, tmp_path):
     zip_path = _make_app_zip(tmp_path)
 
     with (
-        patch("djx.commands.add.fetch_registry", return_value=MOCK_REGISTRY),
-        patch("djx.commands.add.download_and_extract") as mock_dl,
+        patch("djux.commands.add.fetch_registry", return_value=MOCK_REGISTRY),
+        patch("djux.commands.add.download_and_extract") as mock_dl,
     ):
         mock_dl.return_value = tmp_path / "build" / "testapp-main"
         result = runner.invoke(add, ["testapp"])
@@ -120,14 +120,14 @@ def test_add_full_flow(runner, djx_project, tmp_path):
 
 def test_add_updates_project_json(runner, djx_project, tmp_path):
     with (
-        patch("djx.commands.add.fetch_registry", return_value=MOCK_REGISTRY),
-        patch("djx.commands.add.download_and_extract") as mock_dl,
+        patch("djux.commands.add.fetch_registry", return_value=MOCK_REGISTRY),
+        patch("djux.commands.add.download_and_extract") as mock_dl,
     ):
         mock_dl.return_value = tmp_path / "build" / "testapp-main"
         _make_app_zip(tmp_path)  # creates the build dir
         runner.invoke(add, ["testapp"])
 
-    data = json.loads((djx_project / "djx.project.json").read_text())
+    data = json.loads((djx_project / "djux.project.json").read_text())
     assert "testapp" in data["installed_apps"]
 
 
@@ -135,11 +135,11 @@ def test_add_fails_outside_djx_project(runner, tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     result = runner.invoke(add, ["testapp"])
     assert result.exit_code != 0
-    assert "No djx project found" in result.output
+    assert "No djux project found" in result.output
 
 
 def test_add_fails_when_app_not_in_registry(runner, djx_project):
-    with patch("djx.commands.add.fetch_registry", return_value=MOCK_REGISTRY):
+    with patch("djux.commands.add.fetch_registry", return_value=MOCK_REGISTRY):
         result = runner.invoke(add, ["nonexistent"])
     assert result.exit_code != 0
     assert "not found in registry" in result.output
@@ -149,12 +149,12 @@ def test_add_fails_when_manifest_missing_fields(runner, djx_project, tmp_path):
     bad_manifest = {"name": "testapp"}  # missing required fields
     app_dir = tmp_path / "build" / "testapp-main"
     app_dir.mkdir(parents=True)
-    (app_dir / "djx.json").write_text(json.dumps(bad_manifest))
+    (app_dir / "djux.json").write_text(json.dumps(bad_manifest))
     (app_dir / "app").mkdir()
 
     with (
-        patch("djx.commands.add.fetch_registry", return_value=MOCK_REGISTRY),
-        patch("djx.commands.add.download_and_extract", return_value=app_dir),
+        patch("djux.commands.add.fetch_registry", return_value=MOCK_REGISTRY),
+        patch("djux.commands.add.download_and_extract", return_value=app_dir),
     ):
         result = runner.invoke(add, ["testapp"])
 
@@ -163,12 +163,12 @@ def test_add_fails_when_manifest_missing_fields(runner, djx_project, tmp_path):
 
 
 def test_add_warns_if_already_installed(runner, djx_project):
-    (djx_project / "djx.project.json").write_text(
+    (djx_project / "djux.project.json").write_text(
         json.dumps(
-            {"djx_version": "0.1.0", "project": "myproject", "installed_apps": ["testapp"]}
+            {"djux_version": "0.1.0", "project": "myproject", "installed_apps": ["testapp"]}
         )
     )
-    with patch("djx.commands.add.fetch_registry", return_value=MOCK_REGISTRY):
+    with patch("djux.commands.add.fetch_registry", return_value=MOCK_REGISTRY):
         result = runner.invoke(add, ["testapp"])
     assert result.exit_code == 0
     assert "already installed" in result.output
@@ -180,8 +180,8 @@ def test_add_collision_prompts_for_new_name(runner, djx_project, tmp_path):
     (djx_project / "apps" / "testapp").mkdir(parents=True)
 
     with (
-        patch("djx.commands.add.fetch_registry", return_value=MOCK_REGISTRY),
-        patch("djx.commands.add.download_and_extract") as mock_dl,
+        patch("djux.commands.add.fetch_registry", return_value=MOCK_REGISTRY),
+        patch("djux.commands.add.download_and_extract") as mock_dl,
     ):
         mock_dl.return_value = tmp_path / "build" / "testapp-main"
         # User types "testapp2" when prompted
@@ -189,7 +189,7 @@ def test_add_collision_prompts_for_new_name(runner, djx_project, tmp_path):
 
     assert result.exit_code == 0, result.output
     assert (djx_project / "apps" / "testapp2").exists()
-    data = json.loads((djx_project / "djx.project.json").read_text())
+    data = json.loads((djx_project / "djux.project.json").read_text())
     assert "testapp2" in data["installed_apps"]
 
 
@@ -198,8 +198,8 @@ def test_add_collision_cancel_on_empty_input(runner, djx_project, tmp_path):
     (djx_project / "apps" / "testapp").mkdir(parents=True)
 
     with (
-        patch("djx.commands.add.fetch_registry", return_value=MOCK_REGISTRY),
-        patch("djx.commands.add.download_and_extract") as mock_dl,
+        patch("djux.commands.add.fetch_registry", return_value=MOCK_REGISTRY),
+        patch("djux.commands.add.download_and_extract") as mock_dl,
     ):
         mock_dl.return_value = tmp_path / "build" / "testapp-main"
         # User presses Enter (empty) to cancel

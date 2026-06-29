@@ -21,7 +21,7 @@ def _replace_in_file(path: Path, project_name: str) -> None:
 @click.command()
 @click.argument("project_name")
 def new(project_name: str):
-    """Scaffold a new djx Django project."""
+    """Scaffold a new djux Django project."""
     target = Path.cwd() / project_name
 
     if target.exists():
@@ -45,7 +45,7 @@ def new(project_name: str):
         f"  [cyan]cp .env.example .env[/cyan]\n"
         f"  [cyan]python manage.py migrate[/cyan]\n"
         f"  [cyan]python manage.py runserver[/cyan]\n\n"
-        f"  Then add apps:  [bold cyan]djx add auth[/bold cyan]"
+        f"  Then add apps:  [bold cyan]djux add auth[/bold cyan]"
     )
 
     console.print(Panel(panel_content, title="Ready", border_style="green"))

@@ -10,17 +10,17 @@ if sys.platform == "win32":
         sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 import click
-from djx.commands.new import new
-from djx.commands.add import add
-from djx.commands.remove import remove
-from djx.commands.list import list_apps
-from djx.commands.publish import publish
+from djux.commands.new import new
+from djux.commands.add import add
+from djux.commands.remove import remove
+from djux.commands.list import list_apps
+from djux.commands.publish import publish
 
 
 @click.group()
-@click.version_option(package_name="djx")
+@click.version_option(package_name="djux")
 def main():
-    """djx — add production-ready Django apps in one command."""
+    """djux — add production-ready Django apps in one command."""
 
 
 main.add_command(new)

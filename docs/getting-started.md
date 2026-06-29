@@ -1,4 +1,4 @@
-# Getting started
+﻿# Getting started
 
 This guide takes you from a fresh machine to a running Django project with a JWT auth app installed — in under five minutes.
 
@@ -13,16 +13,16 @@ That's it. Django, DRF, and everything else get installed automatically.
 
 ---
 
-## 1. Install djx
+## 1. install djux
 
 ```bash
-pip install djx
+pip install djux
 ```
 
 Verify the installation:
 
 ```bash
-djx --version
+djux --version
 ```
 
 ---
@@ -30,10 +30,10 @@ djx --version
 ## 2. Create a project
 
 ```bash
-djx new myproject
+djux new myproject
 ```
 
-This copies the djx project template into a new `myproject/` directory and replaces all `{{project_name}}` placeholders. You'll see:
+This copies the djux project template into a new `myproject/` directory and replaces all `{{project_name}}` placeholders. You'll see:
 
 ```
 Creating project: myproject
@@ -91,7 +91,7 @@ Visit `http://localhost:8000/admin/` to confirm Django is running.
 ## 5. Add an app
 
 ```bash
-djx add auth
+djux add auth
 ```
 
 Watch the output:
@@ -116,7 +116,7 @@ The `auth` app is now fully wired into your project. No manual edits required.
 
 ## 6. What just changed
 
-djx made four automatic changes to your project:
+djux made four automatic changes to your project:
 
 **`config/settings.py`** — three entries added to `INSTALLED_APPS`:
 ```python
@@ -148,7 +148,7 @@ path("api/auth/", include("auth.urls")),
 
 **`apps/auth/`** — the full Django app copied here, importable as `auth` because `apps/` is on `sys.path`.
 
-**`djx.project.json`** — updated to track the installation:
+**`djux.project.json`** — updated to track the installation:
 ```json
 {
   "installed_apps": ["auth"]
@@ -179,7 +179,7 @@ curl http://localhost:8000/api/auth/me/ \
 
 ## Next steps
 
-- Browse available apps: `djx list`
-- Remove an app: `djx remove auth`
+- Browse available apps: `djux list`
+- Remove an app: `djux remove auth`
 - Full command reference: [cli-reference.md](cli-reference.md)
 - Build your own app: [creating-apps.md](creating-apps.md)

@@ -5,7 +5,7 @@ from pathlib import Path
 import requests
 
 REGISTRY_URL = "https://raw.githubusercontent.com/browndevv/djx-registry/main/registry.json"
-CACHE_DIR = Path.home() / ".djx"
+CACHE_DIR = Path.home() / ".djux"
 CACHE_FILE = CACHE_DIR / "registry.json"
 CACHE_META_FILE = CACHE_DIR / "registry.meta.json"
 CACHE_TTL = 3600  # 1 hour
