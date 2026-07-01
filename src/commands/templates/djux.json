@@ -1,0 +1,9 @@
+{
+  "name": "ai-chat",
+  "version": "0.1.0",
+  "description": "AI Chat Application Template",
+  "author": "Your Name",
+  "dependencies": {
+    "ai-models": "^0.1.0"
+  }
+}
