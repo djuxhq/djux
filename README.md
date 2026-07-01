@@ -1,22 +1,29 @@
-﻿# djux
+# djux
 
-**djux** is a CLI tool that adds production-ready Django apps to your project in a single command — handling settings, URLs, pip dependencies, and migrations automatically.
+**djux** is a CLI and registry for adding production-ready Django app templates to a project in one command. It handles the repetitive setup work: app files, Django settings, URL wiring, pip dependencies, and migrations.
 
 ```bash
 pip install djux
 
-djux new myproject          # scaffold a new Django project
+djux new myproject
 cd myproject
 
-djux add auth               # JWT auth: register, login, refresh, me endpoint
-djux add chat               # WebSocket chat with rooms
-djux list                   # browse all available apps
-djux remove auth            # cleanly removes app + wiring
+djux add auth
 ```
 
-Think of it as `npm install` for Django apps, combined with an opinionated project scaffold.
+Think of it as a Django app installer where the installed code is copied into your project so you can own it, edit it, and ship it like normal Django code.
 
----
+## Vision
+
+Djux aims to make reusable Django app templates easier to discover, install, inspect, and customize. The project is intentionally open to community feedback: the registry should grow around apps Django developers actually want, with a safe update story for vendored app code.
+
+Current focus:
+
+- Core app templates such as `auth`, `users`, `api-keys`, and `files`.
+- AI-ready templates such as `ai-models`, `ai-prompts`, `ai-chat`, `ai-usage`, and `ai-rag`.
+- A safer update workflow for copied app code: `djux outdated` and `djux update <app>`.
+
+See [APP_ROADMAP.md](APP_ROADMAP.md) for the full roadmap.
 
 ## Installation
 
@@ -31,8 +38,6 @@ Verify:
 ```bash
 djux --version
 ```
-
----
 
 ## Quick start
 
@@ -57,87 +62,83 @@ djux add auth
 
 See [docs/getting-started.md](docs/getting-started.md) for a full walkthrough.
 
----
-
 ## Available apps
 
 | Name | Description | Tags |
 |---|---|---|
-| `auth` | JWT authentication — register, login, logout, refresh, me | `auth` `jwt` `api` |
-| `chat` | WebSocket chat with rooms and presence *(coming soon)* | `chat` `ws` |
-| `support` | Support ticket system with admin integration *(coming soon)* | `support` |
-| `notifications` | In-app notifications with SSE push *(coming soon)* | `notifications` `sse` |
+| `auth` | JWT authentication: register, login, logout, refresh, me | `auth` `jwt` `api` |
+| `users` | User profiles, avatars, preferences | planned |
+| `api-keys` | API keys, scopes, rotation, revocation | planned |
+| `ai-chat` | Basic chat API with conversation history | planned `ai` |
+| `ai-models` | Provider/model registry and model selection | planned `ai` |
 
 ```bash
-djux list           # always shows the current registry
+djux list
 ```
-
----
 
 ## How it works
 
-`djux add <app>` runs 14 steps automatically:
+`djux add <app>` currently:
 
-1. Looks up the app in the registry
-2. Downloads and extracts the app zip from GitHub
-3. Validates the `djux.json` manifest
-4. Copies the `app/` folder into your project's `apps/` directory
-5. Patches `config/settings.py` — injects `INSTALLED_APPS` entries
-6. Patches `config/urls.py` — adds the URL include
-7. Runs `pip install` for all declared dependencies
-8. Runs `python manage.py migrate` if the app has models
+1. Looks up the app in the registry.
+2. Downloads and extracts the app zip from GitHub.
+3. Validates the `djux.json` manifest.
+4. Copies the `app/` folder into your project's `apps/` directory.
+5. Patches `config/settings.py` with `INSTALLED_APPS` entries and settings blocks.
+6. Patches `config/urls.py` with the route include.
+7. Runs `pip install` for declared dependencies.
+8. Runs `python manage.py migrate` if the app has migrations.
+9. Records the installed app in `djux.project.json`.
 
-Everything is idempotent. Running `djux add auth` twice is safe.
-
----
+Installed apps are vendored into the project. That means developers fully own the copied code after install.
 
 ## Project layout
 
-djux projects have a fixed layout so the CLI always knows where to look:
-
-```
+```text
 myproject/
-├── config/
-│   ├── settings.py        ← djux patches INSTALLED_APPS here
-│   └── urls.py            ← djux adds URL includes here
-├── apps/                  ← all Django apps land here
-├── templates/
-├── static/
-├── manage.py
-├── djux.project.json       ← tracks installed apps
-└── requirements.txt
+|-- config/
+|   |-- settings.py        # djux patches INSTALLED_APPS here
+|   `-- urls.py            # djux adds URL includes here
+|-- apps/                  # all Django apps land here
+|-- templates/
+|-- static/
+|-- manage.py
+|-- djux.project.json      # tracks installed apps
+`-- requirements.txt
 ```
-
----
 
 ## Documentation
 
 | Document | Contents |
 |---|---|
 | [Getting started](docs/getting-started.md) | Install, scaffold, first app, what changed |
-| [CLI reference](docs/cli-reference.md) | Every command, every option, every error message |
-| [Creating apps](docs/creating-apps.md) | Build and publish your own djux app |
-| [Registry](docs/registry.md) | How the registry works, caching, custom registries |
-
----
+| [CLI reference](docs/cli-reference.md) | Commands, options, errors |
+| [Creating apps](docs/creating-apps.md) | Build and publish a djux app |
+| [Manifest spec](docs/manifest-spec.md) | `djux.json` contract and versioning rules |
+| [App conventions](docs/app-conventions.md) | Naming, layout, settings, migrations |
+| [Update design](docs/update-design.md) | Planned `djux outdated` and `djux update <app>` flow |
+| [Smoke test checklist](docs/smoke-test-checklist.md) | Quality checklist for official apps |
+| [Registry](docs/registry.md) | Registry format, caching, custom registries |
 
 ## Repositories
 
 | Repo | Purpose |
 |---|---|
-| [browndevv/djux](https://github.com/browndevv/djux) | This repo — CLI and project template |
-| [browndevv/djux-registry](https://github.com/browndevv/djux-registry) | Registry index (`registry.json`) |
-| [browndevv/djux-app-auth](https://github.com/browndevv/djux-app-auth) | Official auth app |
-
----
+| [djuxhq/djux](https://github.com/djuxhq/djux) | CLI and project template |
+| [djuxhq/djux-registry](https://github.com/djuxhq/djux-registry) | Registry index |
+| [djuxhq/djux-app-auth](https://github.com/djuxhq/djux-app-auth) | Official auth app |
 
 ## Contributing
 
-To contribute an app to the registry, build it following the [app spec](docs/creating-apps.md), then run `djux publish` from your app directory for a ready-to-submit PR template.
+Contributors and testers are welcome. Useful ways to help:
 
-To contribute to the CLI itself, open a PR against [browndevv/djux](https://github.com/browndevv/djux).
+- Build official app templates.
+- Test Djux in real Django projects.
+- Improve the CLI and update workflow.
+- Review app manifests and registry entries.
+- Improve documentation.
 
----
+Start with [CONTRIBUTING.md](CONTRIBUTING.md), then check the roadmap and open issues.
 
 ## License
 
