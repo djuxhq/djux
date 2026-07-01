@@ -1,4 +1,4 @@
-﻿# CLI reference
+# CLI reference
 
 Complete reference for all `djux` commands.
 
@@ -293,7 +293,7 @@ Your app is ready to submit!
 
 1. Push your app to a public GitHub repo
 2. Open a PR to the djux registry:
-   https://github.com/browndevv/djux-registry/compare
+   https://github.com/djuxhq/djux-registry/compare
 
 PR body template:
 ---

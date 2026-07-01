@@ -1,4 +1,4 @@
-﻿# Getting started
+# Getting started
 
 This guide takes you from a fresh machine to a running Django project with a JWT auth app installed — in under five minutes.
 
@@ -118,11 +118,12 @@ The `auth` app is now fully wired into your project. No manual edits required.
 
 djux made four automatic changes to your project:
 
-**`config/settings.py`** — three entries added to `INSTALLED_APPS`:
+**`config/settings.py`** - four entries added to `INSTALLED_APPS`:
 ```python
-"auth_app",
+"auth",
 "rest_framework",
 "rest_framework_simplejwt",
+"rest_framework_simplejwt.token_blacklist",
 ```
 
 And a settings block injected at the bottom:
