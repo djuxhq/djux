@@ -4,7 +4,7 @@ from pathlib import Path
 
 import requests
 
-REGISTRY_URL = "https://raw.githubusercontent.com/browndevv/djux-registry/main/registry.json"
+REGISTRY_URL = "https://raw.githubusercontent.com/djuxhq/djux-registry/main/registry.json"
 CACHE_DIR = Path.home() / ".djux"
 CACHE_FILE = CACHE_DIR / "registry.json"
 CACHE_META_FILE = CACHE_DIR / "registry.meta.json"

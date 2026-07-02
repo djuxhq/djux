@@ -7,7 +7,7 @@ from djux.core.manifest import InvalidManifestError, parse_manifest
 
 console = Console()
 
-REGISTRY_PR_URL = "https://github.com/browndevv/djux-registry/compare"
+REGISTRY_PR_URL = "https://github.com/djuxhq/djux-registry/compare"
 
 
 @click.command()
@@ -46,7 +46,7 @@ def publish():
     console.print(
         f"\n[bold]Your app is ready to submit![/bold]\n\n"
         f"1. Push your app to a public GitHub repo\n"
-        f"2. Open a PR to the djx registry:\n"
+        f"2. Open a PR to the djux registry:\n"
         f"   [cyan]{REGISTRY_PR_URL}[/cyan]\n\n"
         f"PR body template:\n"
         f"---\n"
@@ -57,7 +57,7 @@ def publish():
         f"- **Author:** {manifest.get('author', '<your-name>')}\n\n"
         f"Checklist:\n"
         f"- [ ] App repo is public\n"
-        f"- [ ] djx.json is valid (verified by djux publish)\n"
+        f"- [ ] djux.json is valid (verified by djux publish)\n"
         f"- [ ] README.md exists\n"
         f"- [ ] At least one passing test\n"
         f"---"
