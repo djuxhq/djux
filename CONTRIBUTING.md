@@ -41,6 +41,15 @@ pytest
 4. Run `pytest` before opening a PR.
 5. Explain the user-facing impact in the PR body.
 
+## Contribution scope rules
+
+- Claim one issue at a time unless a maintainer agrees to broader scope.
+- Open one focused PR per issue.
+- Target the current codebase: Djux is a Python package, and CLI changes should modify files under `djux/`.
+- Do not add unrelated language stacks, generated scaffolds, or placeholder code.
+- Do not include payment wallet requests, bounty claims, or unrelated promotion in issues or PRs.
+- If a PR does not match the issue scope or project stack, maintainers may close it without review.
+
 ## Quality bar for official apps
 
 Official apps should include:
