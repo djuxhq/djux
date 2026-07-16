@@ -1,5 +1,7 @@
 import json
+import os
 import shutil
+import sys
 import zipfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -7,7 +9,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from click.testing import CliRunner
 
-from djux.commands.add import add
+from djux.commands.add import _project_python, add
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
@@ -191,6 +193,38 @@ def test_add_collision_prompts_for_new_name(runner, djx_project, tmp_path):
     assert (djx_project / "apps" / "testapp2").exists()
     data = json.loads((djx_project / "djux.project.json").read_text())
     assert "testapp2" in data["installed_apps"]
+
+
+def test_project_python_falls_back_to_sys_executable(tmp_path, monkeypatch):
+    monkeypatch.delenv("VIRTUAL_ENV", raising=False)
+    assert _project_python(tmp_path) == sys.executable
+
+
+def test_project_python_prefers_project_dot_venv(tmp_path, monkeypatch):
+    monkeypatch.delenv("VIRTUAL_ENV", raising=False)
+    bin_dir = "Scripts" if os.name == "nt" else "bin"
+    exe_name = "python.exe" if os.name == "nt" else "python"
+    venv_python = tmp_path / ".venv" / bin_dir / exe_name
+    venv_python.parent.mkdir(parents=True)
+    venv_python.touch()
+
+    assert _project_python(tmp_path) == str(venv_python)
+
+
+def test_project_python_prefers_active_virtual_env(tmp_path, monkeypatch):
+    active_venv = tmp_path / "active-venv"
+    bin_dir = "Scripts" if os.name == "nt" else "bin"
+    exe_name = "python.exe" if os.name == "nt" else "python"
+    venv_python = active_venv / bin_dir / exe_name
+    venv_python.parent.mkdir(parents=True)
+    venv_python.touch()
+
+    monkeypatch.setenv("VIRTUAL_ENV", str(active_venv))
+
+    # Even though djux itself isn't running from this venv (sys.executable
+    # differs), $VIRTUAL_ENV is inherited from the activating shell and
+    # should be preferred over the project's own .venv/ or sys.executable.
+    assert _project_python(tmp_path) == str(venv_python)
 
 
 def test_add_collision_cancel_on_empty_input(runner, djx_project, tmp_path):
