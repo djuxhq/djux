@@ -1,4 +1,5 @@
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -35,6 +36,33 @@ def _write_project_json(root: Path, data: dict) -> None:
     (root / "djux.project.json").write_text(
         json.dumps(data, indent=2), encoding="utf-8"
     )
+
+
+def _project_python(root: Path) -> str:
+    """Resolve the Python interpreter belonging to the target project.
+
+    djux is commonly installed before the project's own virtualenv exists
+    (see README quick start), so `sys.executable` here is djux's own
+    interpreter, not the project's. Prefer a .venv/ in the project root
+    (the project's own environment, regardless of what's active in the
+    current shell), then the active virtualenv via $VIRTUAL_ENV as a
+    fallback for projects using a differently-located venv, and only then
+    sys.executable.
+    """
+    bin_dir = "Scripts" if os.name == "nt" else "bin"
+    exe_name = "python.exe" if os.name == "nt" else "python"
+
+    candidates = [root / ".venv"]
+    virtual_env = os.environ.get("VIRTUAL_ENV")
+    if virtual_env:
+        candidates.append(Path(virtual_env))
+
+    for venv_path in candidates:
+        python_path = venv_path / bin_dir / exe_name
+        if python_path.exists():
+            return str(python_path)
+
+    return sys.executable
 
 
 @click.command()
@@ -161,11 +189,12 @@ def add(app_name: str, registry_url: str):
     console.print("✓ urls.py updated")
 
     # 11. Install pip dependencies
+    python_exe = _project_python(root)
     deps = manifest.get("dependencies", [])
     if deps:
         with console.status("Installing dependencies..."):
             result = subprocess.run(
-                [sys.executable, "-m", "pip", "install", *deps],
+                [python_exe, "-m", "pip", "install", *deps],
                 capture_output=True,
                 text=True,
             )
@@ -178,7 +207,7 @@ def add(app_name: str, registry_url: str):
     if manifest.get("migrations", False):
         with console.status("Running migrations..."):
             result = subprocess.run(
-                [sys.executable, "manage.py", "migrate"],
+                [python_exe, "manage.py", "migrate"],
                 cwd=root,
                 capture_output=True,
                 text=True,

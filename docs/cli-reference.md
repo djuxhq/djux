@@ -22,21 +22,25 @@ djux [OPTIONS] COMMAND [ARGS]...
 Scaffold a new djux Django project.
 
 ```
-djux new <project_name>
+djux new <project_name> [directory]
 ```
+
+`directory` is optional, matching `django-admin startproject name [directory]`: pass it to create the project files inside an existing (or new) directory instead of a new folder named after `project_name`.
 
 ### What it does
 
-1. Checks that `<project_name>/` does not already exist in the current directory
-2. Copies the built-in project template to `./<project_name>/`
-3. Replaces `{{project_name}}` in every file
-4. Prints next-step instructions
+1. Determines the target directory: `./<project_name>/` by default, or `directory` if given
+2. Checks that the target does not already exist (or, when `directory` is given, that it's empty)
+3. Copies the built-in project template into the target
+4. Replaces `{{project_name}}` in every file
+5. Prints next-step instructions
 
 ### Arguments
 
 | Argument | Description |
 |---|---|
-| `project_name` | Name of the project directory to create |
+| `project_name` | Name used for `{{project_name}}` substitution, and the default target directory |
+| `directory` | Optional. Create the project here instead of `./<project_name>/` |
 
 ### Output
 
@@ -47,8 +51,6 @@ Creating project: myproject
 │ ✓ Project created: myproject/       │
 │                                     │
 │   cd myproject                      │
-│   python -m venv .venv              │
-│   source .venv/bin/activate         │
 │   pip install -r requirements.txt   │
 │   cp .env.example .env              │
 │   python manage.py migrate          │
@@ -62,7 +64,8 @@ Creating project: myproject
 
 | Condition | Message |
 |---|---|
-| Directory already exists | `✗ Directory 'myproject' already exists.` |
+| Target directory already exists (no `directory` arg) | `✗ Directory 'myproject' already exists.` |
+| `directory` given and already exists and is non-empty | `✗ Directory 'custom/path' already exists and is not empty.` |
 
 ### Generated project structure
 

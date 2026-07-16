@@ -67,3 +67,42 @@ def test_new_project_json_has_correct_structure(runner):
     assert data["project"] == "myproject"
     assert data["installed_apps"] == []
     assert "djux_version" in data
+
+
+def test_new_with_directory_creates_project_there(runner):
+    result = runner.invoke(new, ["myproject", "somewhere/else"])
+    assert result.exit_code == 0, result.output
+
+    root = Path.cwd() / "somewhere" / "else"
+    assert root.is_dir()
+    assert not (Path.cwd() / "myproject").exists()
+    assert (root / "config" / "settings.py").exists()
+
+    project_json = (root / "djux.project.json").read_text()
+    assert "myproject" in project_json
+
+
+def test_new_with_directory_fails_if_not_empty(runner):
+    target = Path.cwd() / "somewhere"
+    target.mkdir()
+    (target / "existing.txt").write_text("hi")
+
+    result = runner.invoke(new, ["myproject", "somewhere"])
+    assert result.exit_code != 0
+    assert "already exists" in result.output
+
+
+def test_new_with_directory_allows_empty_existing_dir(runner):
+    target = Path.cwd() / "somewhere"
+    target.mkdir()
+
+    result = runner.invoke(new, ["myproject", "somewhere"])
+    assert result.exit_code == 0, result.output
+    assert (target / "manage.py").exists()
+
+
+def test_new_panel_omits_venv_instructions(runner):
+    result = runner.invoke(new, ["myproject"])
+    assert result.exit_code == 0
+    assert "python -m venv" not in result.output
+    assert "activate" not in result.output

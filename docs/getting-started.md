@@ -42,7 +42,7 @@ Creating project: myproject
 │ ✓ Project created: myproject/       │
 │                                     │
 │   cd myproject                      │
-│   python -m venv .venv              │
+│   pip install -r requirements.txt   │
 │   ...                               │
 ╰─────────────────────────────────────╯
 ```
