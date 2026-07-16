@@ -43,18 +43,19 @@ def _project_python(root: Path) -> str:
 
     djux is commonly installed before the project's own virtualenv exists
     (see README quick start), so `sys.executable` here is djux's own
-    interpreter, not the project's. Prefer the active virtualenv (inherited
-    via $VIRTUAL_ENV even though djux itself isn't running from it) or a
-    .venv/ in the project root, and only fall back to sys.executable.
+    interpreter, not the project's. Prefer a .venv/ in the project root
+    (the project's own environment, regardless of what's active in the
+    current shell), then the active virtualenv via $VIRTUAL_ENV as a
+    fallback for projects using a differently-located venv, and only then
+    sys.executable.
     """
     bin_dir = "Scripts" if os.name == "nt" else "bin"
     exe_name = "python.exe" if os.name == "nt" else "python"
 
-    candidates = []
+    candidates = [root / ".venv"]
     virtual_env = os.environ.get("VIRTUAL_ENV")
     if virtual_env:
         candidates.append(Path(virtual_env))
-    candidates.append(root / ".venv")
 
     for venv_path in candidates:
         python_path = venv_path / bin_dir / exe_name

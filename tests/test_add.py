@@ -211,7 +211,10 @@ def test_project_python_prefers_project_dot_venv(tmp_path, monkeypatch):
     assert _project_python(tmp_path) == str(venv_python)
 
 
-def test_project_python_prefers_active_virtual_env(tmp_path, monkeypatch):
+def test_project_python_falls_back_to_active_virtual_env(tmp_path, monkeypatch):
+    # No .venv/ in the project itself, but a virtualenv is active - this
+    # covers projects whose venv lives outside the project root (e.g.
+    # ~/.virtualenvs/myproject) rather than at <root>/.venv.
     active_venv = tmp_path / "active-venv"
     bin_dir = "Scripts" if os.name == "nt" else "bin"
     exe_name = "python.exe" if os.name == "nt" else "python"
@@ -221,10 +224,28 @@ def test_project_python_prefers_active_virtual_env(tmp_path, monkeypatch):
 
     monkeypatch.setenv("VIRTUAL_ENV", str(active_venv))
 
-    # Even though djux itself isn't running from this venv (sys.executable
-    # differs), $VIRTUAL_ENV is inherited from the activating shell and
-    # should be preferred over the project's own .venv/ or sys.executable.
     assert _project_python(tmp_path) == str(venv_python)
+
+
+def test_project_python_prefers_project_venv_over_unrelated_active_env(tmp_path, monkeypatch):
+    # Regression test: an unrelated venv activated in the shell (e.g. left
+    # over from a different project) must not shadow this project's own
+    # .venv/ - the project-local interpreter always wins.
+    bin_dir = "Scripts" if os.name == "nt" else "bin"
+    exe_name = "python.exe" if os.name == "nt" else "python"
+
+    project_venv_python = tmp_path / ".venv" / bin_dir / exe_name
+    project_venv_python.parent.mkdir(parents=True)
+    project_venv_python.touch()
+
+    other_project_venv = tmp_path.parent / "other-project-venv"
+    other_venv_python = other_project_venv / bin_dir / exe_name
+    other_venv_python.parent.mkdir(parents=True)
+    other_venv_python.touch()
+
+    monkeypatch.setenv("VIRTUAL_ENV", str(other_project_venv))
+
+    assert _project_python(tmp_path) == str(project_venv_python)
 
 
 def test_add_collision_cancel_on_empty_input(runner, djx_project, tmp_path):
